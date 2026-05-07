@@ -37,7 +37,8 @@ sudo xbps-install -Sy \
   vulkan-loader \
   mesa-vulkan-radeon \
   xf86-video-amdgpu \
-  mesa-vaapi
+  mesa-vaapi \
+  pam_rundir
 
 # === РАСПАКОВКА ИСХОДНИКОВ ===
 msg "Extracting sources"
@@ -109,4 +110,14 @@ PS1='\[\e[32m\]\W \$\[\e[0m\] '
 if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
     exec startx
 fi
+
+export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+
+# sudo mkdir -p /etc/pipewire/pipewire.conf.d
+# sudo ln -s /usr/share/examples/wireplumber/10-wireplumber.conf /etc/pipewire/pipewire.conf.d/
+# sudo ln -s /usr/share/examples/pipewire/20-pipewire-pulse.conf /etc/pipewire/pipewire.conf.d/
+
+# sudo vi /etc/pam.d/system-login
+# Добавьте эту строку в конец секции session
+# session    optional    pam_rundir.so
 EOF
