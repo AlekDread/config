@@ -38,7 +38,7 @@ sudo xbps-install -Sy \
   mesa-vulkan-radeon \
   xf86-video-amdgpu \
   mesa-vaapi \
-  pam_rundir
+  dumb_runtime_dir
 
 # === РАСПАКОВКА ИСХОДНИКОВ ===
 msg "Extracting sources"
@@ -119,5 +119,8 @@ export XDG_RUNTIME_DIR="/run/user/$(id -u)"
 
 # sudo vi /etc/pam.d/system-login
 # Добавьте эту строку в конец секции session
-# session    optional    pam_rundir.so
+# session  optional  pam_dumb_runtime_dir.so
+
+# sudo mkdir -p /run/user
+# sudo chmod 0755 /run/user
 EOF
