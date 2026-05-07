@@ -38,7 +38,9 @@ sudo xbps-install -Sy \
   mesa-vulkan-radeon \
   xf86-video-amdgpu \
   mesa-vaapi \
-  dumb_runtime_dir
+  dumb_runtime_dir \
+  qutebrowser \
+  xbanish
 
 # === РАСПАКОВКА ИСХОДНИКОВ ===
 msg "Extracting sources"
@@ -92,6 +94,9 @@ TERM_NAME=linux' | sudo tee /etc/sv/agetty-tty1/conf >/dev/null
 msg "Forcing .xinitrc"
 cat >"$HOME/.xinitrc" <<'EOF'
 #!/bin/sh
+setxkbmap -layout us,ru -option grp:alt_shift_toggle
+xrandr --output DisplayPort-0 --mode 1920x1080 --rate 144 &
+setsid xbanish
 exec dwm
 EOF
 chmod +x "$HOME/.xinitrc"
