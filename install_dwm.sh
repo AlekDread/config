@@ -42,7 +42,7 @@ mkdir -p "$SRC_DIR"
 for archive in dmenu-5.4.tar.gz dwm-6.8.tar.gz st-0.9.3.tar.gz; do
   dir="${archive%.tar.gz}"
   target="$SRC_DIR/$dir"
-  rm -rf "$target"  # Насильно удаляем
+  rm -rf "$target" # Насильно удаляем
   mkdir -p "$target"
   tar -xzf "$CONFIG_DIR/$archive" -C "$target" --strip-components=1
 done
@@ -105,11 +105,4 @@ PS1='\[\e[32m\]\W \$\[\e[0m\] '
 if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
     exec startx
 fi
-EOF'
-
-# === ПЕРЕЗАПУСК AGETTY ===
-msg "Restarting agetty-tty1"
-sudo sv restart agetty-tty1 || msg "Could not restart agetty; reboot later"
-
-echo ''
-msg "🚀 Installation complete. Reboot: sudo reboot"
+EOF
