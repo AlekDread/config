@@ -33,7 +33,11 @@ sudo xbps-install -Sy \
   mesa-dri \
   htop \
   xmirror \
-  void-repo-nonfree
+  void-repo-nonfree \
+  vulkan-loader \
+  mesa-vulkan-radeon \
+  xf86-video-amdgpu \
+  mesa-vaapi
 
 # === РАСПАКОВКА ИСХОДНИКОВ ===
 msg "Extracting sources"
