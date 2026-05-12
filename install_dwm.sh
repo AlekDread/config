@@ -51,7 +51,6 @@ export XDG_RUNTIME_DIR="/run/user/$(id -u)"
 # sudo ln -s /usr/share/examples/pipewire/20-pipewire-pulse.conf /etc/pipewire/pipewire.conf.d/
 
 # sudo vi /etc/pam.d/system-login
-# Добавьте эту строку в конец секции session
 # session  optional  pam_dumb_runtime_dir.so
 
 # sudo mkdir -p /run/user
