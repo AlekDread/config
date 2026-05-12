@@ -1,14 +1,12 @@
 #!/bin/sh
 set -eu
 
-# === НАСТРОЙКИ ===
 CONFIG_DIR="$HOME/config"
 SRC_DIR="$HOME/src"
 USERNAME="${USER:?USER not set}"
 
 msg() { printf '==> %s\n' "$1"; }
 
-# === ПРОВЕРКА ФАЙЛОВ ===
 for f in "$CONFIG_DIR/dmenu-5.4.tar.gz" "$CONFIG_DIR/dwm-6.8.tar.gz" "$CONFIG_DIR/st-0.9.3.tar.gz"; do
   [ -f "$f" ] || {
     echo "ERROR: $f not found" >&2
@@ -16,54 +14,44 @@ for f in "$CONFIG_DIR/dmenu-5.4.tar.gz" "$CONFIG_DIR/dwm-6.8.tar.gz" "$CONFIG_DI
   }
 done
 
-# === УСТАНОВКА ПАКЕТОВ ===
 msg "Installing packages"
 sudo xbps-install -Sy \
-  xorg-minimal \
-  xinit \
-  xauth \
+  xorg \
   base-devel \
-  bash \
   libX11-devel \
   libXft-devel \
   libXinerama-devel \
   font-firacode \
   alacritty \
   fastfetch \
-  mesa-dri \
   htop \
   xmirror \
   void-repo-nonfree \
-  vulkan-loader \
-  mesa-vulkan-radeon \
-  xf86-video-amdgpu \
-  mesa-vaapi \
+  dbus \
   dumb_runtime_dir \
-  qutebrowser \
+  pipewire \
+  wireplumber \
+  pavucontrol \
+  curl \
+  wget \
   xbanish
 
-# === РАСПАКОВКА ИСХОДНИКОВ ===
 msg "Extracting sources"
 mkdir -p "$SRC_DIR"
 
 for archive in dmenu-5.4.tar.gz dwm-6.8.tar.gz st-0.9.3.tar.gz; do
   dir="${archive%.tar.gz}"
   target="$SRC_DIR/$dir"
-  rm -rf "$target" # Насильно удаляем
   mkdir -p "$target"
   tar -xzf "$CONFIG_DIR/$archive" -C "$target" --strip-components=1
 done
 
-# === СБОРКА DMENU ===
 msg "Building dmenu"
-rm -rf "$SRC_DIR/dmenu-5.4/config.h"
 cd "$SRC_DIR/dmenu-5.4"
 cp config.def.h config.h
 sudo make clean install
 
-# === СБОРКА DWM ===
 msg "Building dwm"
-rm -rf "$SRC_DIR/dwm-6.8/config.h"
 cd "$SRC_DIR/dwm-6.8"
 if [ -f "$CONFIG_DIR/dwm.config.h" ]; then
   cp "$CONFIG_DIR/dwm.config.h" config.h
@@ -73,14 +61,11 @@ else
 fi
 sudo make clean install
 
-# === СБОРКА ST ===
 msg "Building st"
-rm -rf "$SRC_DIR/st-0.9.3/config.h"
 cd "$SRC_DIR/st-0.9.3"
 cp config.def.h config.h
 sudo make clean install
 
-# === АВТОЛОГИН НА TTY1 ===
 msg "Configuring autologin"
 echo 'if [ -x /sbin/agetty ] || [ -x /bin/agetty ]; then
     if [ "${tty}" = "tty1" ]; then
@@ -90,16 +75,13 @@ fi
 BAUD_RATE=38400
 TERM_NAME=linux' | sudo tee /etc/sv/agetty-tty1/conf >/dev/null
 
-# === ФАЙЛЫ ОБОЛОЧКИ - НАСИЛЬНАЯ ЗАПИСЬ ===
 msg "Forcing .xinitrc"
 cat >"$HOME/.xinitrc" <<'EOF'
-#!/bin/sh
 setxkbmap -layout us,ru -option grp:alt_shift_toggle
-xrandr --output DisplayPort-0 --mode 1920x1080 --rate 144 &
-setsid xbanish
+#xrandr --output DisplayPort-0 --mode 1920x1080 --rate 144
+xbanish &
 exec dwm
 EOF
-chmod +x "$HOME/.xinitrc"
 
 msg "Forcing .bash_profile"
 cat >"$HOME/.bash_profile" <<'EOF'
